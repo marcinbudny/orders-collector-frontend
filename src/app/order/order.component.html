@@ -1,0 +1,15 @@
+<div *ngIf="order">
+  <h4>{{order.localName}}</h4>
+  <ul>
+    <li *ngFor="let item of order.items">
+      <span class="item-name">{{item.itemName}}</span>
+      <span class="item-person">( {{item.personName}} )</span>
+    </li>
+  </ul>
+  <div class="responsible-person" *ngIf="order.responsiblePerson">
+    Wylosowano: {{order.responsiblePerson}}
+  </div>
+  <div class="select-responsible-person" *ngIf="!order.responsiblePerson">
+    <button role="button" (click)="selectResponsiblePerson()">Losuj</button>
+  </div>
+</div>

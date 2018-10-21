@@ -2,8 +2,7 @@ export class Order {
   id: string;
   date: Date;
   localId: string;
-  localName: string;
-  responsiblePerson?: string;
+  responsiblePerson: string | null;
   items: OrderItem[];
 }
 

@@ -1,0 +1,20 @@
+<div *ngIf="formVisible; else addOrderButton">
+  <form (submit)="onOrder()">
+    <div>
+      <label for="localId">ID lokalu</label>
+      <input type="text" name="localId" [(ngModel)]="localId" />
+    </div>
+    <div>
+      <label for="itemName">Co zamawiasz?</label>
+      <input type="text" name="itemName" [(ngModel)]="itemName" />
+    </div>
+    <div>
+      <button type="submit" [disabled]="isOrderingItem">Zamów</button>
+      <button type="button" (click)="onCancel()" [disabled]="isOrderingItem">Anuluj</button>
+      <span *ngIf="isOrderingItem">Ordering...</span>
+    </div>
+  </form>
+</div>
+<ng-template #addOrderButton>
+  <button (click)="onAddNewOrder()">Nowe zamówienie</button>
+</ng-template>

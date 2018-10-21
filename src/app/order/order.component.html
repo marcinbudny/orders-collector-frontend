@@ -1,5 +1,5 @@
-<div *ngIf="order">
-  <h4>{{order.localName}}</h4>
+<div *ngIf="order" class="order">
+  <h4>{{localName}}</h4>
   <ul>
     <li *ngFor="let item of order.items">
       <span class="item-name">{{item.itemName}}</span>
@@ -9,6 +9,25 @@
   <div class="responsible-person" *ngIf="order.responsiblePerson">
     Wylosowano: {{order.responsiblePerson}}
   </div>
+
+  <div *ngIf="formVisible; else addButton">
+    <form (submit)="onOrder()">
+      <div>
+        <label for="itemName">Co zamawiasz?</label>
+        <input type="text" name="itemName" [(ngModel)]="itemName" />
+      </div>
+      <div>
+        <button type="submit" [disabled]="isOrderingItem">Zamów</button>
+        <button type="button" (click)="onCancel()" [disabled]="isOrderingItem">Anuluj</button>
+        <span *ngIf="isOrderingItem">Ordering...</span>
+      </div>
+    </form>
+  </div>
+
+  <ng-template #addButton>
+    <button type="button" *ngIf="!isOrderingItem" (click)="onStartOrdering()">+</button>
+  </ng-template>
+
   <div class="select-responsible-person" *ngIf="!order.responsiblePerson">
     <button role="button" (click)="selectResponsiblePerson()">Losuj</button>
   </div>

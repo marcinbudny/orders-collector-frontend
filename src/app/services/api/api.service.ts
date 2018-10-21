@@ -1,45 +1,38 @@
 import { Injectable } from '@angular/core';
-import { Order } from '../../read-model/order';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Order } from '../../model/order';
+import { Observable } from 'rxjs';
+import * as commands from 'src/app/model/commands';
+import { delay } from 'rxjs/operators';
+import { Local } from 'src/app/model/local';
+
+const rootUrl = 'http://localhost:5000';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  constructor() {}
+  constructor(private client: HttpClient) {}
+
+  orderItem(command: commands.OrderItemCommand): Observable<Object> {
+    return this.client
+      .post(`${rootUrl}/orders/order-item`, command)
+      .pipe(delay(1000)); // TODO: remove
+  }
+
+  selectResponsiblePerson(
+    command: commands.SelectResponsiblePerson
+  ): Observable<Object> {
+    return this.client
+      .post(`${rootUrl}/orders/select-responsible-person`, command)
+      .pipe(delay(1000)); // TODO: remove
+  }
 
   getOrdersForToday(): Observable<Order[]> {
-    const orders: Order[] = [
-      {
-        id: 'masalahouse-20180904',
-        localId: 'masalahouse',
-        localName: 'Masla House',
-        date: new Date('2018-09-04T19:00:00Z'),
-        items: [
-          {
-            itemName: 'Tikka masala',
-            personName: 'MarcinB'
-          },
-          {
-            itemName: 'Vindaloo',
-            personName: 'LukaszG'
-          }
-        ]
-      },
-      {
-        id: 'synergia-20180904',
-        localId: 'synergia',
-        localName: 'Synergia',
-        date: new Date('2018-09-04T18:30:00Z'),
-        items: [
-          {
-            itemName: 'Risotto z kurkami',
-            personName: 'PrzemekP'
-          }
-        ]
-      }
-    ];
+    return this.client.get<Order[]>(`${rootUrl}/orders/today`);
+  }
 
-    return of(orders);
+  getLocals(): Observable<Local[]> {
+    return this.client.get<Local[]>(`${rootUrl}/locals`);
   }
 }

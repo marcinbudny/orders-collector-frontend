@@ -4,6 +4,7 @@
     <li *ngFor="let item of order.items">
       <span class="item-name">{{item.itemName}}</span>
       <span class="item-person">( {{item.personName}} )</span>
+      <button type="button" (click)="onRemoveItem(item)">X</button>
     </li>
   </ul>
   <div class="responsible-person" *ngIf="order.responsiblePerson">

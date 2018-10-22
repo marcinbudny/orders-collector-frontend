@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Order } from '../model/order';
-import { OrderItemCommand } from '../model/commands';
+import * as commands from '../model/commands';
 import { OrderingMode } from './order.reducer';
 import { Local } from '../model/local';
 
@@ -20,8 +20,13 @@ export enum ActionTypes {
   OrderNewItemSuccess = '[Orders] Order new item success',
   OrderNewItemFailed = '[Orders] Order new item failed',
 
-  NewOrderAdded = '[Orders] New order added',
-  NewItemAdded = '[Orders] New item added',
+  SelectResponsiblePerson = '[Orders] Select responsible person',
+  SelectResponsiblePersonSuccess = '[Orders] Select responsible person success',
+  SelectResponsiblePersonFailed = '[Orders] Select responsible person failed',
+
+  RemoveItem = '[Orders] Remove item',
+  RemoveItemSuccess = '[Orders] Remove item success',
+  RemoveItemFailed = '[Orders] Remove item failed',
 
   OnEventNewOrderAdded = '[Orders] On event new order added',
   OnEventOrderItemAdded = '[Orders] On event order item added',
@@ -81,7 +86,7 @@ export class CancelOrderingItem implements Action {
 export class OrderNewItem implements Action {
   readonly type = ActionTypes.OrderNewItem;
 
-  constructor(public command: OrderItemCommand) {}
+  constructor(public command: commands.OrderItemCommand) {}
 }
 
 export class OrderNewItemSuccess implements Action {
@@ -90,6 +95,37 @@ export class OrderNewItemSuccess implements Action {
 
 export class OrderNewItemFailed implements Action {
   readonly type = ActionTypes.OrderNewItemFailed;
+
+  constructor(public error: string) {}
+}
+export class SelectResponsiblePerson implements Action {
+  readonly type = ActionTypes.SelectResponsiblePerson;
+
+  constructor(public command: commands.SelectResponsiblePerson) {}
+}
+
+export class SelectResponsiblePersonSuccess implements Action {
+  readonly type = ActionTypes.SelectResponsiblePersonSuccess;
+}
+
+export class SelectResponsiblePersonFailed implements Action {
+  readonly type = ActionTypes.SelectResponsiblePersonFailed;
+
+  constructor(public error: string) {}
+}
+
+export class RemoveItem implements Action {
+  readonly type = ActionTypes.RemoveItem;
+
+  constructor(public command: commands.RemoveItem) {}
+}
+
+export class RemoveItemSuccess implements Action {
+  readonly type = ActionTypes.RemoveItemSuccess;
+}
+
+export class RemoveItemFailed implements Action {
+  readonly type = ActionTypes.RemoveItemFailed;
 
   constructor(public error: string) {}
 }
@@ -178,6 +214,9 @@ export type OrderActions =
   | OrderNewItem
   | OrderNewItemSuccess
   | OrderNewItemFailed
+  | SelectResponsiblePerson
+  | SelectResponsiblePersonSuccess
+  | SelectResponsiblePersonFailed
   | OnEventNewOrderAdded
   | OnEventOrderItemAdded
   | OnEventOrderItemRemoved

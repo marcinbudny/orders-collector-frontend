@@ -14,6 +14,14 @@ const rootUrl = 'http://localhost:5000';
 export class ApiService {
   constructor(private client: HttpClient) {}
 
+  getOrdersForToday(): Observable<Order[]> {
+    return this.client.get<Order[]>(`${rootUrl}/orders/today`);
+  }
+
+  getLocals(): Observable<Local[]> {
+    return this.client.get<Local[]>(`${rootUrl}/locals`);
+  }
+
   orderItem(command: commands.OrderItemCommand): Observable<Object> {
     return this.client
       .post(`${rootUrl}/orders/order-item`, command)
@@ -28,11 +36,9 @@ export class ApiService {
       .pipe(delay(1000)); // TODO: remove
   }
 
-  getOrdersForToday(): Observable<Order[]> {
-    return this.client.get<Order[]>(`${rootUrl}/orders/today`);
-  }
-
-  getLocals(): Observable<Local[]> {
-    return this.client.get<Local[]>(`${rootUrl}/locals`);
+  removeItem(command: commands.RemoveItem): Observable<Object> {
+    return this.client
+      .post(`${rootUrl}/orders/remove-item`, command)
+      .pipe(delay(1000)); // TODO: remove
   }
 }

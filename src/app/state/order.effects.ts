@@ -43,4 +43,28 @@ export class OrderEffects {
       )
     )
   );
+
+  @Effect()
+  selectResponsiblePerson$ = this.actions$.pipe(
+    ofType(orderActions.ActionTypes.SelectResponsiblePerson),
+    mergeMap((action: orderActions.SelectResponsiblePerson) =>
+      this.api.selectResponsiblePerson(action.command).pipe(
+        map(_ => new orderActions.SelectResponsiblePersonSuccess()),
+        catchError(err =>
+          of(new orderActions.SelectResponsiblePersonFailed(err))
+        )
+      )
+    )
+  );
+
+  @Effect()
+  removeItem$ = this.actions$.pipe(
+    ofType(orderActions.ActionTypes.RemoveItem),
+    mergeMap((action: orderActions.RemoveItem) =>
+      this.api.removeItem(action.command).pipe(
+        map(_ => new orderActions.RemoveItemSuccess()),
+        catchError(err => of(new orderActions.RemoveItemFailed(err)))
+      )
+    )
+  );
 }

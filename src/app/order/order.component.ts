@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
-import { Order } from '../model/order';
+import { Order, OrderItem } from '../model/order';
 import * as fromOrders from '../state/order.reducer';
 import * as ordersActions from '../state/order.actions';
 import { Store, select } from '@ngrx/store';
@@ -62,7 +62,9 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   selectResponsiblePerson(): void {
-    this.order.responsiblePerson = 'MarcinB';
+    this.store.dispatch(
+      new ordersActions.SelectResponsiblePerson({ orderId: this.order.id })
+    );
   }
 
   get localName(): string | null {
@@ -100,6 +102,15 @@ export class OrderComponent implements OnInit, OnDestroy {
       new ordersActions.StartOrderingItem(
         new fromOrders.NewItemInOrder(this.order.id)
       )
+    );
+  }
+
+  onRemoveItem(item: OrderItem): void {
+    this.store.dispatch(
+      new ordersActions.RemoveItem({
+        orderId: this.order.id,
+        personName: item.personName
+      })
     );
   }
 }

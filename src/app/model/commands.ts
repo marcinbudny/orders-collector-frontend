@@ -7,3 +7,8 @@ export class OrderItemCommand {
 export class SelectResponsiblePerson {
   orderId: string;
 }
+
+export class RemoveItem {
+  orderId: string;
+  personName: string;
+}

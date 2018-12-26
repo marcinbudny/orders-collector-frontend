@@ -1,20 +1,78 @@
 <div *ngIf="formVisible; else addOrderButton">
-  <form (submit)="onOrder()">
-    <div>
-      <label for="localId">ID lokalu</label>
-      <input type="text" name="localId" [(ngModel)]="localId" />
-    </div>
-    <div>
-      <label for="itemName">Co zamawiasz?</label>
-      <input type="text" name="itemName" [(ngModel)]="itemName" />
-    </div>
-    <div>
-      <button type="submit" [disabled]="isOrderingItem">Zamów</button>
-      <button type="button" (click)="onCancel()" [disabled]="isOrderingItem">Anuluj</button>
-      <span *ngIf="isOrderingItem">Ordering...</span>
+  <form (ngSubmit)="onOrder()" class="new-order-form" [formGroup]="itemForm">
+    <mat-form-field>
+      <mat-label>{{
+        !localsAreLoaded ? 'Zaczekaj chwilkę...' : 'Wybierz knajpę'
+      }}</mat-label>
+      <input
+        matInput
+        required
+        type="text"
+        name="local"
+        [matAutocomplete]="auto"
+        formControlName="localSelect"
+      />
+      <button
+        mat-button
+        *ngIf="localSelect.value"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        (click)="localSelect.setValue(null)"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayLocal">
+        <mat-option
+          *ngFor="let local of (filteredLocals$ | async)"
+          [value]="local"
+        >
+          {{ local.name }}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="localSelect.hasError('required')">
+        Musisz wybrać knajpę
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Co zamawiasz?</mat-label>
+      <input
+        matInput
+        required
+        name="itemName"
+        type="text"
+        formControlName="itemName"
+      />
+      <mat-error *ngIf="itemName.hasError('required')">
+        Napisz co chcesz zamówić
+      </mat-error>
+    </mat-form-field>
+    <div class="buttons-row">
+      <button
+        type="submit"
+        [disabled]="isOrderingItem || !itemForm.valid"
+        mat-button
+      >
+        Zamów
+      </button>
+      <button
+        type="button"
+        (click)="onCancel()"
+        [disabled]="isOrderingItem"
+        mat-button
+      >
+        Anuluj
+      </button>
+      <mat-spinner
+        class="small-spinner"
+        [diameter]="30"
+        *ngIf="isOrderingItem"
+      ></mat-spinner>
     </div>
   </form>
 </div>
 <ng-template #addOrderButton>
-  <button (click)="onAddNewOrder()">Nowe zamówienie</button>
+  <button (click)="onAddNewOrder()" mat-flat-button color="primary">
+    Nowe zamówienie
+  </button>
 </ng-template>

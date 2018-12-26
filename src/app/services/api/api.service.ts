@@ -25,7 +25,7 @@ export class ApiService {
   orderItem(command: commands.OrderItemCommand): Observable<Object> {
     return this.client
       .post(`${rootUrl}/orders/order-item`, command)
-      .pipe(delay(1000)); // TODO: remove
+      .pipe(delay(2000)); // TODO: remove
   }
 
   selectResponsiblePerson(

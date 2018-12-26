@@ -11,7 +11,7 @@ export type OrderingMode = 'not ordering' | 'new order' | NewItemInOrder;
 export interface OrdersState {
   locals: Local[];
   orders: Order[];
-  error: string | null;
+  error: any;
   orderingMode: OrderingMode;
   isProcessingCommand: boolean;
 }
@@ -44,6 +44,11 @@ export const getOrderingItemForOrderId = createSelector(
 export const isProcessingCommand = createSelector(
   getOrdersFeature,
   state => state.isProcessingCommand
+);
+
+export const getError = createSelector(
+  getOrdersFeature,
+  state => state.error
 );
 
 export function reducer(
@@ -98,11 +103,18 @@ export function reducer(
       };
 
     case ActionTypes.OrderNewItemSuccess:
+      return {
+        ...state,
+        isProcessingCommand: false,
+        orderingMode: 'not ordering',
+        error: null
+      };
+
     case ActionTypes.OrderNewItemFailed:
       return {
         ...state,
         isProcessingCommand: false,
-        orderingMode: 'not ordering'
+        error: action.error
       };
 
     case ActionTypes.OnEventNewOrderAdded:

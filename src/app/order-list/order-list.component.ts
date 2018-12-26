@@ -6,6 +6,7 @@ import { takeWhile } from 'rxjs/operators';
 
 import * as orderActions from '../state/order.actions';
 import * as fromOrders from '../state/order.reducer';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-order-list',
@@ -18,7 +19,8 @@ export class OrderListComponent implements OnInit, OnDestroy {
 
   constructor(
     private api: ApiService,
-    private store: Store<fromOrders.OrdersState>
+    private store: Store<fromOrders.OrdersState>,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -28,6 +30,27 @@ export class OrderListComponent implements OnInit, OnDestroy {
         takeWhile(() => this.componentActive)
       )
       .subscribe(orders => (this.orders = orders));
+
+    this.store
+      .pipe(
+        select(fromOrders.getError),
+        takeWhile(() => this.componentActive)
+      )
+      .subscribe(error => {
+        if (error) {
+          if (typeof error === 'string') {
+            this.snackBar.open(`Error: ${error}`, undefined, {
+              duration: 2000
+            });
+          } else if (error.error.description) {
+            this.snackBar.open(`Error: ${error.error.description}`, undefined, {
+              duration: 2000
+            });
+          } else {
+            this.snackBar.open('Error', undefined, { duration: 2000 });
+          }
+        }
+      });
 
     this.store.dispatch(new orderActions.LoadLocals());
 

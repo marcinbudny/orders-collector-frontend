@@ -1,0 +1,9 @@
+.new-order-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.buttons-row {
+  display: flex;
+  flex-direction: row;
+}

@@ -1,3 +1,43 @@
-.order {
-  border: 1px solid black;
+.ordered-item {
+  display: grid;
+  grid: auto auto/ auto 30px;
+  padding: 4px;
+  border-radius: 3px;
+  margin-bottom: 5px;
+  margin-left: 16px;
+}
+
+.ordered-item:hover {
+  background-color: #eee;
+}
+
+.item-name {
+  grid-column: 1/2;
+  grid-row: 1/2;
+}
+
+.item-person {
+  grid-column: 1/2;
+  grid-row: 2/3;
+  font-size: 75%;
+  color: darkgray;
+}
+
+.item-remove {
+  grid-column: 2/3;
+  grid-row: 1/3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.action-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.responsible-person {
+  color: #ff4081;
 }

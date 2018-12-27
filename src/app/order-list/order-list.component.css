@@ -1,0 +1,30 @@
+.list-container {
+  display: flex;
+  flex-flow: column wrap;
+  align-content: flex-start;
+  height: 100%;
+}
+
+.list-item {
+  width: 32%;
+  margin-top: 10px;
+  margin-left: 1%;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 1000px) {
+  .list-item {
+    width: 49%;
+  }
+}
+
+@media (max-width: 700px) {
+  .list-container {
+    display: block;
+  }
+
+  .list-item {
+    margin-left: 0;
+    width: 100%;
+  }
+}

@@ -1,4 +1,22 @@
-<div>
-  <app-order *ngFor="let order of orders" [order]="order"></app-order>
-  <app-new-order></app-new-order>
+<div class="list-container">
+  <app-order
+    *ngFor="let order of orders"
+    [order]="order"
+    class="list-item"
+  ></app-order>
+
+  <!-- <div
+    class="list-item"
+    style="border: 1px solid blue"
+    *ngFor="let i of [1, 2, 3, 4, 5, 6]"
+  >
+    <ul>
+      some shit
+      <li>whatever this is a long sentence</li>
+      <li>A bit shorter</li>
+      <li>helloooooooooooo</li>
+    </ul>
+  </div> -->
+
+  <app-new-order class="list-item"></app-new-order>
 </div>

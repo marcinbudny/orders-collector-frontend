@@ -1,35 +1,65 @@
-<div *ngIf="order" class="order">
-  <h4>{{localName}}</h4>
-  <ul>
-    <li *ngFor="let item of order.items">
-      <span class="item-name">{{item.itemName}}</span>
-      <span class="item-person">( {{item.personName}} )</span>
-      <button type="button" (click)="onRemoveItem(item)">X</button>
-    </li>
-  </ul>
-  <div class="responsible-person" *ngIf="order.responsiblePerson">
-    Wylosowano: {{order.responsiblePerson}}
-  </div>
-
-  <div *ngIf="formVisible; else addButton">
-    <form (submit)="onOrder()">
-      <div>
-        <label for="itemName">Co zamawiasz?</label>
-        <input type="text" name="itemName" [(ngModel)]="itemName" />
+<mat-card *ngIf="order">
+  <mat-card-header>
+    <mat-card-title>{{ localName }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div>
+      <div class="ordered-item" *ngFor="let item of order.items">
+        <div class="item-name">{{ item.itemName }}</div>
+        <div class="item-person">{{ item.personName }}</div>
+        <div class="item-remove">
+          <button type="button" (click)="onRemoveItem(item)" mat-icon-button>
+            <mat-icon>clear</mat-icon>
+          </button>
+        </div>
       </div>
-      <div>
-        <button type="submit" [disabled]="isOrderingItem">Zamów</button>
-        <button type="button" (click)="onCancel()" [disabled]="isOrderingItem">Anuluj</button>
-        <span *ngIf="isOrderingItem">Ordering...</span>
+    </div>
+
+    <div class="action-container" *ngIf="!formVisible">
+      <div class="add-action">
+        <button
+          mat-button
+          color="primary"
+          *ngIf="!isOrderingItem"
+          (click)="onStartOrdering()"
+        >
+          <mat-icon>add</mat-icon>Dodaj
+        </button>
       </div>
-    </form>
-  </div>
 
-  <ng-template #addButton>
-    <button type="button" *ngIf="!isOrderingItem" (click)="onStartOrdering()">+</button>
-  </ng-template>
+      <div class="select-responsible-person-action">
+        <button
+          mat-button
+          color="accent"
+          (click)="selectResponsiblePerson()"
+          *ngIf="!order.responsiblePerson"
+        >
+          <mat-icon>face</mat-icon>Losuj
+        </button>
+        <div class="responsible-person" *ngIf="order.responsiblePerson">
+          Wylosowano: {{ order.responsiblePerson }}
+        </div>
+      </div>
+    </div>
 
-  <div class="select-responsible-person" *ngIf="!order.responsiblePerson">
-    <button role="button" (click)="selectResponsiblePerson()">Losuj</button>
-  </div>
-</div>
+    <div *ngIf="formVisible">
+      <form (submit)="onOrder()">
+        <div>
+          <label for="itemName">Co zamawiasz?</label>
+          <input type="text" name="itemName" [(ngModel)]="itemName" />
+        </div>
+        <div>
+          <button type="submit" [disabled]="isOrderingItem">Zamów</button>
+          <button
+            type="button"
+            (click)="onCancel()"
+            [disabled]="isOrderingItem"
+          >
+            Anuluj
+          </button>
+          <span *ngIf="isOrderingItem">Ordering...</span>
+        </div>
+      </form>
+    </div>
+  </mat-card-content>
+</mat-card>

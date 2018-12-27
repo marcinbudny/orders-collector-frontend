@@ -21,6 +21,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,7 +49,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatAutocompleteModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
-    MatIconModule
+    MatIconModule,
+    MatCardModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

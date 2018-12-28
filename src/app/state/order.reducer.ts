@@ -8,12 +8,25 @@ export class NewItemInOrder {
 }
 export type OrderingMode = 'not ordering' | 'new order' | NewItemInOrder;
 
+export class OrderItemCommandInProgress {
+  constructor(public orderId: string | null) {}
+}
+
+export class SelectResponsiblePersonCommandInProgress {
+  constructor(public orderId: string) {}
+}
+
+export type CommandInProgress =
+  | 'none'
+  | OrderItemCommandInProgress
+  | SelectResponsiblePersonCommandInProgress;
+
 export interface OrdersState {
   locals: Local[];
   orders: Order[];
   error: any;
   orderingMode: OrderingMode;
-  isProcessingCommand: boolean;
+  commandInProgress: CommandInProgress;
 }
 
 const initialState: OrdersState = {
@@ -21,7 +34,7 @@ const initialState: OrdersState = {
   orders: [],
   error: null,
   orderingMode: 'not ordering',
-  isProcessingCommand: false
+  commandInProgress: 'none'
 };
 
 const getOrdersFeature = createFeatureSelector<OrdersState>('orders');
@@ -41,9 +54,9 @@ export const getOrderingItemForOrderId = createSelector(
   state => state.orderingMode
 );
 
-export const isProcessingCommand = createSelector(
+export const commandInProgress = createSelector(
   getOrdersFeature,
-  state => state.isProcessingCommand
+  state => state.commandInProgress
 );
 
 export const getError = createSelector(
@@ -99,13 +112,17 @@ export function reducer(
     case ActionTypes.OrderNewItem:
       return {
         ...state,
-        isProcessingCommand: true
+        commandInProgress: new OrderItemCommandInProgress(
+          state.orderingMode instanceof NewItemInOrder
+            ? state.orderingMode.orderId
+            : null
+        )
       };
 
     case ActionTypes.OrderNewItemSuccess:
       return {
         ...state,
-        isProcessingCommand: false,
+        commandInProgress: 'none',
         orderingMode: 'not ordering',
         error: null
       };
@@ -113,8 +130,23 @@ export function reducer(
     case ActionTypes.OrderNewItemFailed:
       return {
         ...state,
-        isProcessingCommand: false,
+        commandInProgress: 'none',
         error: action.error
+      };
+
+    case ActionTypes.SelectResponsiblePerson:
+      return {
+        ...state,
+        commandInProgress: new SelectResponsiblePersonCommandInProgress(
+          action.command.orderId
+        )
+      };
+
+    case ActionTypes.SelectResponsiblePersonSuccess:
+    case ActionTypes.SelectResponsiblePersonFailed:
+      return {
+        ...state,
+        commandInProgress: 'none'
       };
 
     case ActionTypes.OnEventNewOrderAdded:

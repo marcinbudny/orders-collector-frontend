@@ -41,3 +41,9 @@
 .responsible-person {
   color: #ff4081;
 }
+
+.buttons-row {
+  margin-left: 16px;
+  display: flex;
+  flex-direction: row;
+}

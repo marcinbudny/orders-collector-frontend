@@ -32,10 +32,16 @@
           mat-button
           color="accent"
           (click)="selectResponsiblePerson()"
-          *ngIf="!order.responsiblePerson"
+          *ngIf="!order.responsiblePerson && !isSelectingResponsiblePerson"
         >
           <mat-icon>face</mat-icon>Losuj
         </button>
+        <mat-spinner
+          class="small-spinner"
+          [diameter]="30"
+          color="accent"
+          *ngIf="isSelectingResponsiblePerson"
+        ></mat-spinner>
         <div class="responsible-person" *ngIf="order.responsiblePerson">
           Wylosowano: {{ order.responsiblePerson }}
         </div>
@@ -44,20 +50,39 @@
 
     <div *ngIf="formVisible">
       <form (submit)="onOrder()">
-        <div>
-          <label for="itemName">Co zamawiasz?</label>
-          <input type="text" name="itemName" [(ngModel)]="itemName" />
-        </div>
-        <div>
-          <button type="submit" [disabled]="isOrderingItem">Zamów</button>
+        <mat-form-field>
+          <mat-label>Co zamawiasz?</mat-label>
+          <input
+            matInput
+            type="text"
+            name="itemName"
+            [formControl]="itemName"
+          />
+          <mat-error *ngIf="itemName.hasError('required')">
+            Napisz co chcesz zamówić
+          </mat-error>
+        </mat-form-field>
+        <div class="buttons-row">
+          <button
+            mat-button
+            type="submit"
+            [disabled]="isOrderingItem || !itemName.valid"
+          >
+            Zamów
+          </button>
           <button
             type="button"
+            mat-button
             (click)="onCancel()"
             [disabled]="isOrderingItem"
           >
             Anuluj
           </button>
-          <span *ngIf="isOrderingItem">Ordering...</span>
+          <mat-spinner
+            class="small-spinner"
+            [diameter]="30"
+            *ngIf="isOrderingItem"
+          ></mat-spinner>
         </div>
       </form>
     </div>

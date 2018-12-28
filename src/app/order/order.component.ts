@@ -5,6 +5,7 @@ import * as ordersActions from '../state/order.actions';
 import { Store, select } from '@ngrx/store';
 import { takeWhile } from 'rxjs/operators';
 import { Local } from '../model/local';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-order',
@@ -19,9 +20,10 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   formVisible = false;
   isOrderingItem = false;
+  isSelectingResponsiblePerson = false;
   componentActive = true;
 
-  itemName: string;
+  itemName = new FormControl(null, Validators.required);
 
   constructor(private store: Store<fromOrders.OrdersState>) {}
 
@@ -42,10 +44,17 @@ export class OrderComponent implements OnInit, OnDestroy {
 
     this.store
       .pipe(
-        select(fromOrders.isProcessingCommand),
+        select(fromOrders.commandInProgress),
         takeWhile(() => this.componentActive)
       )
-      .subscribe(isOrdering => (this.isOrderingItem = isOrdering));
+      .subscribe(cmd => {
+        this.isOrderingItem =
+          cmd instanceof fromOrders.OrderItemCommandInProgress &&
+          cmd.orderId === this.order.id;
+        this.isSelectingResponsiblePerson =
+          cmd instanceof fromOrders.SelectResponsiblePersonCommandInProgress &&
+          cmd.orderId === this.order.id;
+      });
   }
 
   ngOnDestroy() {}
@@ -83,14 +92,16 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   onOrder(): void {
-    const personName = `Person${Math.floor(Math.random() * 10000)}`;
-    this.store.dispatch(
-      new ordersActions.OrderNewItem({
-        personName: personName,
-        itemName: this.itemName,
-        localId: this.order.localId
-      })
-    );
+    if (this.itemName.valid) {
+      const personName = `Person${Math.floor(Math.random() * 10000)}`;
+      this.store.dispatch(
+        new ordersActions.OrderNewItem({
+          personName: personName,
+          itemName: this.itemName.value,
+          localId: this.order.localId
+        })
+      );
+    }
   }
 
   onCancel(): void {

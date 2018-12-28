@@ -6,7 +6,6 @@
       }}</mat-label>
       <input
         matInput
-        required
         type="text"
         name="local"
         [matAutocomplete]="auto"
@@ -36,13 +35,7 @@
     </mat-form-field>
     <mat-form-field>
       <mat-label>Co zamawiasz?</mat-label>
-      <input
-        matInput
-        required
-        name="itemName"
-        type="text"
-        formControlName="itemName"
-      />
+      <input matInput name="itemName" type="text" formControlName="itemName" />
       <mat-error *ngIf="itemName.hasError('required')">
         Napisz co chcesz zamówić
       </mat-error>

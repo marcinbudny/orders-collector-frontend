@@ -43,10 +43,15 @@ export class NewOrderComponent implements OnInit, OnDestroy {
 
     this.store
       .pipe(
-        select(fromOrders.isProcessingCommand),
+        select(fromOrders.commandInProgress),
         takeWhile(_ => this.isComponentActive)
       )
-      .subscribe(isOrderingItem => (this.isOrderingItem = isOrderingItem));
+      .subscribe(
+        cmd =>
+          (this.isOrderingItem =
+            cmd instanceof fromOrders.OrderItemCommandInProgress &&
+            cmd.orderId === null)
+      );
 
     this.store
       .pipe(

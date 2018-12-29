@@ -23,12 +23,19 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
+import {
+  NavbarComponent,
+  LoginDialogComponent
+} from './navbar/navbar.component';
+import { MatDialogModule } from '@angular/material/dialog';
 @NgModule({
   declarations: [
     AppComponent,
     OrderComponent,
     OrderListComponent,
-    NewOrderComponent
+    NewOrderComponent,
+    NavbarComponent,
+    LoginDialogComponent
   ],
   imports: [
     HttpClientModule,
@@ -51,8 +58,10 @@ import { MatListModule } from '@angular/material/list';
     MatProgressSpinnerModule,
     MatIconModule,
     MatCardModule,
-    MatListModule
+    MatListModule,
+    MatDialogModule
   ],
+  entryComponents: [LoginDialogComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

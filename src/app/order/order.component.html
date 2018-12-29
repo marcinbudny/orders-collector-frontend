@@ -7,10 +7,16 @@
       <div class="ordered-item" *ngFor="let item of order.items">
         <div class="item-name">{{ item.itemName }}</div>
         <div class="item-person">{{ item.personName }}</div>
-        <div class="item-remove">
-          <button type="button" (click)="onRemoveItem(item)" mat-icon-button>
+        <div class="item-remove" *ngIf="item.personName === personName">
+          <button
+            type="button"
+            (click)="onRemoveItem(item)"
+            *ngIf="!isRemovingItem"
+            mat-icon-button
+          >
             <mat-icon>clear</mat-icon>
           </button>
+          <mat-spinner [diameter]="24" *ngIf="isRemovingItem"></mat-spinner>
         </div>
       </div>
     </div>
@@ -20,7 +26,7 @@
         <button
           mat-button
           color="primary"
-          *ngIf="!isOrderingItem"
+          *ngIf="!isOrderingItem && !currentPersonAlreadyOrdered"
           (click)="onStartOrdering()"
         >
           <mat-icon>add</mat-icon>Dodaj

@@ -28,12 +28,20 @@ export class NewOrderComponent implements OnInit, OnDestroy {
 
   formVisible = false;
   isOrderingItem = false;
+  personName: string | null;
   locals: Local[] | undefined;
   filteredLocals$: Observable<Local[]>;
 
   constructor(private store: Store<fromOrders.OrdersState>) {}
 
   ngOnInit() {
+    this.store
+      .pipe(
+        select(fromOrders.getPersonName),
+        takeWhile(_ => this.isComponentActive)
+      )
+      .subscribe(name => (this.personName = name));
+
     this.store
       .pipe(
         select(fromOrders.getOrderingItemForOrderId),
@@ -115,15 +123,16 @@ export class NewOrderComponent implements OnInit, OnDestroy {
   }
 
   onOrder(): void {
-    const personName = `Person${Math.floor(Math.random() * 10000)}`;
-
-    this.store.dispatch(
-      new orderActions.OrderNewItem({
-        localId: this.itemForm.value.localSelect.id,
-        itemName: this.itemForm.value.itemName,
-        personName: personName
-      })
-    );
+    // const personName = `Person${Math.floor(Math.random() * 10000)}`;
+    if (this.personName) {
+      this.store.dispatch(
+        new orderActions.OrderNewItem({
+          localId: this.itemForm.value.localSelect.id,
+          itemName: this.itemForm.value.itemName,
+          personName: this.personName
+        })
+      );
+    }
   }
 
   onCancel(): void {

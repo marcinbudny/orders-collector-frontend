@@ -38,7 +38,9 @@ export enum ActionTypes {
   OnEventLocalRenamed = '[Orders] On event local renamed',
   OnEventLocalRemoved = '[Orders] On event local removed',
   OnEventLocalAliasAdded = '[Orders] On event local alias added',
-  OnEventLocalAliasRemoved = '[Orders] On event local alias removed'
+  OnEventLocalAliasRemoved = '[Orders] On event local alias removed',
+
+  SetPersonName = '[Orders] Set person name'
 }
 
 export class LoadOrders implements Action {
@@ -202,6 +204,12 @@ export class OnEventLocalAliasRemoved implements Action {
   constructor(public localId: string, public alias: string) {}
 }
 
+export class SetPersonName implements Action {
+  readonly type = ActionTypes.SetPersonName;
+
+  constructor(public personName: string) {}
+}
+
 export type OrderActions =
   | LoadOrders
   | LoadOrdersSuccess
@@ -217,6 +225,9 @@ export type OrderActions =
   | SelectResponsiblePerson
   | SelectResponsiblePersonSuccess
   | SelectResponsiblePersonFailed
+  | RemoveItem
+  | RemoveItemSuccess
+  | RemoveItemFailed
   | OnEventNewOrderAdded
   | OnEventOrderItemAdded
   | OnEventOrderItemRemoved
@@ -226,4 +237,5 @@ export type OrderActions =
   | OnEventLocalRenamed
   | OnEventLocalRemoved
   | OnEventLocalAliasAdded
-  | OnEventLocalAliasRemoved;
+  | OnEventLocalAliasRemoved
+  | SetPersonName;

@@ -21,6 +21,8 @@ export class OrderComponent implements OnInit, OnDestroy {
   formVisible = false;
   isOrderingItem = false;
   isSelectingResponsiblePerson = false;
+  isRemovingItem = false;
+  personName: string | null;
   componentActive = true;
 
   itemName = new FormControl(null, Validators.required);
@@ -28,6 +30,13 @@ export class OrderComponent implements OnInit, OnDestroy {
   constructor(private store: Store<fromOrders.OrdersState>) {}
 
   ngOnInit() {
+    this.store
+      .pipe(
+        select(fromOrders.getPersonName),
+        takeWhile(_ => this.componentActive)
+      )
+      .subscribe(name => (this.personName = name));
+
     this.store
       .pipe(
         select(fromOrders.getOrderingItemForOrderId),
@@ -54,6 +63,10 @@ export class OrderComponent implements OnInit, OnDestroy {
         this.isSelectingResponsiblePerson =
           cmd instanceof fromOrders.SelectResponsiblePersonCommandInProgress &&
           cmd.orderId === this.order.id;
+        this.isRemovingItem =
+          cmd instanceof fromOrders.RemoveItemCommandInProgress &&
+          cmd.orderId === this.order.id &&
+          (this.personName !== null && cmd.personName === this.personName);
       });
   }
 
@@ -92,11 +105,11 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   onOrder(): void {
-    if (this.itemName.valid) {
-      const personName = `Person${Math.floor(Math.random() * 10000)}`;
+    if (this.itemName.valid && this.personName) {
+      // const personName = `Person${Math.floor(Math.random() * 10000)}`;
       this.store.dispatch(
         new ordersActions.OrderNewItem({
-          personName: personName,
+          personName: this.personName,
           itemName: this.itemName.value,
           localId: this.order.localId
         })
@@ -105,6 +118,7 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   onCancel(): void {
+    this.itemName.reset();
     this.store.dispatch(new ordersActions.CancelOrderingItem());
   }
 
@@ -123,5 +137,9 @@ export class OrderComponent implements OnInit, OnDestroy {
         personName: item.personName
       })
     );
+  }
+
+  get currentPersonAlreadyOrdered() {
+    return this.order.items.some(i => i.personName === this.personName);
   }
 }

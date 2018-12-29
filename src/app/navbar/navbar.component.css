@@ -1,0 +1,14 @@
+.navbar {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  background-color: #3f51b5;
+  width: 100%;
+  height: 35px;
+  color: white;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.navbar-item {
+  margin-right: 16px;
+}

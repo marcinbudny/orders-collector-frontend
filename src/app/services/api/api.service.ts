@@ -23,22 +23,20 @@ export class ApiService {
   }
 
   orderItem(command: commands.OrderItemCommand): Observable<Object> {
-    return this.client
-      .post(`${rootUrl}/orders/order-item`, command)
-      .pipe(delay(2000)); // TODO: remove
+    return this.client.post(`${rootUrl}/orders/order-item`, command);
+    // .pipe(delay(2000)); // TODO: remove
   }
 
   selectResponsiblePerson(
     command: commands.SelectResponsiblePerson
   ): Observable<Object> {
-    return this.client
-      .post(`${rootUrl}/orders/select-responsible-person`, command)
-      .pipe(delay(1000)); // TODO: remove
+    return this.client.post(
+      `${rootUrl}/orders/select-responsible-person`,
+      command
+    ); // .pipe(delay(1000)); // TODO: remove
   }
 
   removeItem(command: commands.RemoveItem): Observable<Object> {
-    return this.client
-      .post(`${rootUrl}/orders/remove-item`, command)
-      .pipe(delay(1000)); // TODO: remove
+    return this.client.post(`${rootUrl}/orders/remove-item`, command); // .pipe(delay(1000)); // TODO: remove
   }
 }

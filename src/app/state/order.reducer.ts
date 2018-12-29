@@ -16,10 +16,15 @@ export class SelectResponsiblePersonCommandInProgress {
   constructor(public orderId: string) {}
 }
 
+export class RemoveItemCommandInProgress {
+  constructor(public orderId: string, public personName: string) {}
+}
+
 export type CommandInProgress =
   | 'none'
   | OrderItemCommandInProgress
-  | SelectResponsiblePersonCommandInProgress;
+  | SelectResponsiblePersonCommandInProgress
+  | RemoveItemCommandInProgress;
 
 export interface OrdersState {
   locals: Local[];
@@ -27,6 +32,7 @@ export interface OrdersState {
   error: any;
   orderingMode: OrderingMode;
   commandInProgress: CommandInProgress;
+  personName: string | null;
 }
 
 const initialState: OrdersState = {
@@ -34,7 +40,8 @@ const initialState: OrdersState = {
   orders: [],
   error: null,
   orderingMode: 'not ordering',
-  commandInProgress: 'none'
+  commandInProgress: 'none',
+  personName: null
 };
 
 const getOrdersFeature = createFeatureSelector<OrdersState>('orders');
@@ -62,6 +69,11 @@ export const commandInProgress = createSelector(
 export const getError = createSelector(
   getOrdersFeature,
   state => state.error
+);
+
+export const getPersonName = createSelector(
+  getOrdersFeature,
+  state => state.personName
 );
 
 export function reducer(
@@ -149,6 +161,22 @@ export function reducer(
         commandInProgress: 'none'
       };
 
+    case ActionTypes.RemoveItem:
+      return {
+        ...state,
+        commandInProgress: new RemoveItemCommandInProgress(
+          action.command.orderId,
+          action.command.personName
+        )
+      };
+
+    case ActionTypes.RemoveItemSuccess:
+    case ActionTypes.RemoveItemFailed:
+      return {
+        ...state,
+        commandInProgress: 'none'
+      };
+
     case ActionTypes.OnEventNewOrderAdded:
       return {
         ...state,
@@ -219,6 +247,12 @@ export function reducer(
       return replaceLocal(state, action.localId, local =>
         localWithoutAlias(local, action.alias)
       );
+
+    case ActionTypes.SetPersonName:
+      return {
+        ...state,
+        personName: action.personName
+      };
 
     default:
       return state;

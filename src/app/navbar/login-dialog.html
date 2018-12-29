@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Jak się nazywasz?</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <input matInput [formControl]="personName" />
+    <mat-error *ngIf="personName.hasError('required')">
+      Napisz jak się nazywasz
+    </mat-error>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onOk()" [disabled]="!personName.valid">OK</button>
+</div>

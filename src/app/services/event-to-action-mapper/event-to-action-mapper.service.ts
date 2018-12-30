@@ -22,7 +22,8 @@ export class EventToActionMapperService {
           new orderActions.OnEventNewOrderAdded(
             event.data.orderId,
             new Date(event.data.date),
-            event.data.localId
+            event.data.localId,
+            event.data.raisedByCommandId
           )
         );
         break;
@@ -32,7 +33,8 @@ export class EventToActionMapperService {
           new orderActions.OnEventOrderItemAdded(
             event.data.orderId,
             event.data.itemName,
-            event.data.personName
+            event.data.personName,
+            event.data.raisedByCommandId
           )
         );
         break;
@@ -42,7 +44,8 @@ export class EventToActionMapperService {
           new orderActions.OnEventOrderItemRemoved(
             event.data.orderId,
             event.data.itemName,
-            event.data.personName
+            event.data.personName,
+            event.data.raisedByCommandId
           )
         );
         break;
@@ -51,20 +54,28 @@ export class EventToActionMapperService {
         this.store.dispatch(
           new orderActions.OnEventResponsiblePersonSelected(
             event.data.orderId,
-            event.data.personName
+            event.data.personName,
+            event.data.raisedByCommandId
           )
         );
         break;
 
       case 'OrderResponsiblePersonRemoved':
         this.store.dispatch(
-          new orderActions.OnEventResponsiblePersonRemoved(event.data.orderId)
+          new orderActions.OnEventResponsiblePersonRemoved(
+            event.data.orderId,
+            event.data.raisedByCommandId
+          )
         );
         break;
 
       case 'LocalAdded':
         this.store.dispatch(
-          new orderActions.OnEventLocalAdded(event.data.id, event.data.name)
+          new orderActions.OnEventLocalAdded(
+            event.data.id,
+            event.data.name,
+            event.data.raisedByCommandId
+          )
         );
         break;
 
@@ -72,14 +83,18 @@ export class EventToActionMapperService {
         this.store.dispatch(
           new orderActions.OnEventLocalRenamed(
             event.data.id,
-            event.data.newName
+            event.data.newName,
+            event.data.raisedByCommandId
           )
         );
         break;
 
       case 'LocalRemoved':
         this.store.dispatch(
-          new orderActions.OnEventLocalRemoved(event.data.id)
+          new orderActions.OnEventLocalRemoved(
+            event.data.id,
+            event.data.raisedByCommandId
+          )
         );
         break;
 
@@ -87,7 +102,8 @@ export class EventToActionMapperService {
         this.store.dispatch(
           new orderActions.OnEventLocalAliasAdded(
             event.data.localId,
-            event.data.alias
+            event.data.alias,
+            event.data.raisedByCommandId
           )
         );
         break;
@@ -96,7 +112,8 @@ export class EventToActionMapperService {
         this.store.dispatch(
           new orderActions.OnEventLocalAliasRemoved(
             event.data.localId,
-            event.data.alias
+            event.data.alias,
+            event.data.raisedByCommandId
           )
         );
         break;

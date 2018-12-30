@@ -2,10 +2,12 @@ import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { Order, OrderItem } from '../model/order';
 import * as fromOrders from '../state/order.reducer';
 import * as ordersActions from '../state/order.actions';
+import * as uuid from 'uuid';
 import { Store, select } from '@ngrx/store';
 import { takeWhile } from 'rxjs/operators';
 import { Local } from '../model/local';
 import { FormControl, Validators } from '@angular/forms';
+import { UniqueSelectionDispatcher } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-order',
@@ -85,7 +87,10 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   selectResponsiblePerson(): void {
     this.store.dispatch(
-      new ordersActions.SelectResponsiblePerson({ orderId: this.order.id })
+      new ordersActions.SelectResponsiblePerson({
+        commandId: uuid.v4(),
+        orderId: this.order.id
+      })
     );
   }
 
@@ -109,6 +114,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       // const personName = `Person${Math.floor(Math.random() * 10000)}`;
       this.store.dispatch(
         new ordersActions.OrderNewItem({
+          commandId: uuid.v4(),
           personName: this.personName,
           itemName: this.itemName.value,
           localId: this.order.localId
@@ -133,6 +139,7 @@ export class OrderComponent implements OnInit, OnDestroy {
   onRemoveItem(item: OrderItem): void {
     this.store.dispatch(
       new ordersActions.RemoveItem({
+        commandId: uuid.v4(),
         orderId: this.order.id,
         personName: item.personName
       })

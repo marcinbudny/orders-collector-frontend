@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as fromOrders from '../state/order.reducer';
 import * as orderActions from '../state/order.actions';
+import * as uuid from 'uuid';
 import { Store, select } from '@ngrx/store';
 import { takeWhile, startWith, map } from 'rxjs/operators';
 import { Local } from '../model/local';
@@ -127,6 +128,7 @@ export class NewOrderComponent implements OnInit, OnDestroy {
     if (this.personName) {
       this.store.dispatch(
         new orderActions.OrderNewItem({
+          commandId: uuid.v4(),
           localId: this.itemForm.value.localSelect.id,
           itemName: this.itemForm.value.itemName,
           personName: this.personName

@@ -16,7 +16,7 @@ import { takeWhile } from 'rxjs/operators';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit, AfterViewInit {
+export class NavbarComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private store: Store<fromOrders.OrdersState>

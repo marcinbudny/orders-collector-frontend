@@ -2,6 +2,7 @@ import { Order, OrderItem } from '../model/order';
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { OrderActions, ActionTypes } from './order.actions';
 import { Local } from '../model/local';
+import { Action } from 'rxjs/internal/scheduler/Action';
 
 export class NewItemInOrder {
   constructor(public orderId: string) {}
@@ -9,15 +10,19 @@ export class NewItemInOrder {
 export type OrderingMode = 'not ordering' | 'new order' | NewItemInOrder;
 
 export class OrderItemCommandInProgress {
-  constructor(public orderId: string | null) {}
+  constructor(public commandId: string, public orderId: string | null) {}
 }
 
 export class SelectResponsiblePersonCommandInProgress {
-  constructor(public orderId: string) {}
+  constructor(public commandId: string, public orderId: string) {}
 }
 
 export class RemoveItemCommandInProgress {
-  constructor(public orderId: string, public personName: string) {}
+  constructor(
+    public commandId: string,
+    public orderId: string,
+    public personName: string
+  ) {}
 }
 
 export type CommandInProgress =
@@ -80,19 +85,23 @@ export function reducer(
   state = initialState,
   action: OrderActions
 ): OrdersState {
+  // state = ensureEventCompletesCommandInProgress(action, state);
+
   switch (action.type) {
     case ActionTypes.LoadOrdersSuccess:
       return {
         ...state,
         orders: action.orders,
-        error: null
+        error: null,
+        commandInProgress: 'none'
       };
 
     case ActionTypes.LoadOrdersFailed:
       return {
         ...state,
         error: action.error,
-        orders: []
+        orders: [],
+        commandInProgress: 'none'
       };
 
     case ActionTypes.LoadLocalsSuccess:
@@ -125,24 +134,23 @@ export function reducer(
       return {
         ...state,
         commandInProgress: new OrderItemCommandInProgress(
+          action.command.commandId,
           state.orderingMode instanceof NewItemInOrder
             ? state.orderingMode.orderId
             : null
         )
       };
 
-    case ActionTypes.OrderNewItemSuccess:
-      return {
-        ...state,
-        commandInProgress: 'none',
-        orderingMode: 'not ordering',
-        error: null
-      };
+    // case ActionTypes.OrderNewItemSuccess:
+    //   return {
+    //     ...state,
+    //     orderingMode: 'not ordering',
+    //     error: null
+    //   };
 
     case ActionTypes.OrderNewItemFailed:
       return {
         ...state,
-        commandInProgress: 'none',
         error: action.error
       };
 
@@ -150,31 +158,33 @@ export function reducer(
       return {
         ...state,
         commandInProgress: new SelectResponsiblePersonCommandInProgress(
+          action.command.commandId,
           action.command.orderId
         )
       };
 
-    case ActionTypes.SelectResponsiblePersonSuccess:
     case ActionTypes.SelectResponsiblePersonFailed:
       return {
         ...state,
-        commandInProgress: 'none'
+        commandInProgress: 'none',
+        error: action.error
       };
 
     case ActionTypes.RemoveItem:
       return {
         ...state,
         commandInProgress: new RemoveItemCommandInProgress(
+          action.command.commandId,
           action.command.orderId,
           action.command.personName
         )
       };
 
-    case ActionTypes.RemoveItemSuccess:
     case ActionTypes.RemoveItemFailed:
       return {
         ...state,
-        commandInProgress: 'none'
+        commandInProgress: 'none',
+        error: action.error
       };
 
     case ActionTypes.OnEventNewOrderAdded:
@@ -193,25 +203,66 @@ export function reducer(
       };
 
     case ActionTypes.OnEventOrderItemAdded:
-      return replaceOrder(state, action.orderId, order =>
+      state = replaceOrder(state, action.orderId, order =>
         orderWithItem(order, {
           itemName: action.itemName,
           personName: action.personName
         })
       );
 
+      if (
+        state.commandInProgress instanceof OrderItemCommandInProgress &&
+        state.commandInProgress.commandId === action.raisedByCommandId
+      ) {
+        return {
+          ...state,
+          orderingMode: 'not ordering',
+          commandInProgress: 'none',
+          error: null
+        };
+      }
+
+      return state;
+
     case ActionTypes.OnEventOrderItemRemoved:
-      return replaceOrder(state, action.orderId, order =>
+      state = replaceOrder(state, action.orderId, order =>
         orderWithoutItem(order, {
           itemName: action.itemName,
           personName: action.personName
         })
       );
 
+      if (
+        state.commandInProgress instanceof RemoveItemCommandInProgress &&
+        state.commandInProgress.commandId === action.raisedByCommandId
+      ) {
+        return {
+          ...state,
+          commandInProgress: 'none',
+          error: null
+        };
+      }
+
+      return state;
+
     case ActionTypes.OnEventResponsiblePersonSelected:
-      return replaceOrder(state, action.orderId, order =>
+      state = replaceOrder(state, action.orderId, order =>
         orderWithResponsiblePerson(order, action.personName)
       );
+
+      if (
+        state.commandInProgress instanceof
+          SelectResponsiblePersonCommandInProgress &&
+        state.commandInProgress.commandId === action.raisedByCommandId
+      ) {
+        return {
+          ...state,
+          commandInProgress: 'none',
+          error: null
+        };
+      }
+
+      return state;
 
     case ActionTypes.OnEventResponsiblePersonRemoved:
       return replaceOrder(state, action.orderId, order =>

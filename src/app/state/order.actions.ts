@@ -138,7 +138,8 @@ export class OnEventNewOrderAdded implements Action {
   constructor(
     public orderId: string,
     public date: Date,
-    public localId: string
+    public localId: string,
+    public raisedByCommandId: string
   ) {}
 }
 
@@ -148,7 +149,8 @@ export class OnEventOrderItemAdded implements Action {
   constructor(
     public orderId: string,
     public itemName: string,
-    public personName: string
+    public personName: string,
+    public raisedByCommandId: string
   ) {}
 }
 
@@ -158,50 +160,71 @@ export class OnEventOrderItemRemoved implements Action {
   constructor(
     public orderId: string,
     public itemName: string,
-    public personName: string
+    public personName: string,
+    public raisedByCommandId: string
   ) {}
 }
 
 export class OnEventResponsiblePersonSelected implements Action {
   readonly type = ActionTypes.OnEventResponsiblePersonSelected;
 
-  constructor(public orderId: string, public personName: string) {}
+  constructor(
+    public orderId: string,
+    public personName: string,
+    public raisedByCommandId: string
+  ) {}
 }
 
 export class OnEventResponsiblePersonRemoved implements Action {
   readonly type = ActionTypes.OnEventResponsiblePersonRemoved;
 
-  constructor(public orderId: string) {}
+  constructor(public orderId: string, public raisedByCommandId: string) {}
 }
 
 export class OnEventLocalAdded implements Action {
   readonly type = ActionTypes.OnEventLocalAdded;
 
-  constructor(public id: string, public name: string) {}
+  constructor(
+    public id: string,
+    public name: string,
+    public raisedByCommandId: string
+  ) {}
 }
 
 export class OnEventLocalRenamed implements Action {
   readonly type = ActionTypes.OnEventLocalRenamed;
 
-  constructor(public id: string, public newName: string) {}
+  constructor(
+    public id: string,
+    public newName: string,
+    public raisedByCommandId: string
+  ) {}
 }
 
 export class OnEventLocalRemoved implements Action {
   readonly type = ActionTypes.OnEventLocalRemoved;
 
-  constructor(public id: string) {}
+  constructor(public id: string, public raisedByCommandId: string) {}
 }
 
 export class OnEventLocalAliasAdded implements Action {
   readonly type = ActionTypes.OnEventLocalAliasAdded;
 
-  constructor(public localId: string, public alias: string) {}
+  constructor(
+    public localId: string,
+    public alias: string,
+    public raisedByCommandId: string
+  ) {}
 }
 
 export class OnEventLocalAliasRemoved implements Action {
   readonly type = ActionTypes.OnEventLocalAliasRemoved;
 
-  constructor(public localId: string, public alias: string) {}
+  constructor(
+    public localId: string,
+    public alias: string,
+    public raisedByCommandId: string
+  ) {}
 }
 
 export class SetPersonName implements Action {
